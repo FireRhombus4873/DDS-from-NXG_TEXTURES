@@ -10,14 +10,19 @@ def main():
     parser.add_argument("directory", nargs="?", default="", help="Directory to extract from (relative to Extracted).")
     args = parser.parse_args()
 
-    if args.silent: silent = True
-    if args.subdirs: subDir = True
-    if args.directory: dirName = args.directory.replace("/", "\\")
+    silent = args.silent
+    subDir = args.subdirs
+    dirName = args.directory.replace("/", "\\") if args.directory else ""
 
     dirCount = 0
     fileCount = 0
 
-    inputDirectory = ".\\Extracted\\" + dirName + "\\"
+    inputDirectory = "..\\Extracted\\" + dirName + "\\"
+
+    if not os.path.exists(inputDirectory):
+        print(f"Error: Directory does not exist: {inputDirectory}")
+        print(f"Absolute path: {os.path.abspath(inputDirectory)}")
+        return
 
     if not subDir:
         subDir = input("Do you want to extract all subdirectories in " + dirName + "? (y/n): ").lower() == 'y'
@@ -28,7 +33,7 @@ def main():
         directories = [inputDirectory]
 
     for directory in directories:
-        outputDirectory = ".\\Converted\\" + dirName + "\\" + os.path.relpath(directory, inputDirectory)
+        outputDirectory = "..\\Converted\\" + dirName + "\\" + os.path.relpath(directory, inputDirectory)
         
         textureFiles = getNXGTextureFiles(directory)
         
